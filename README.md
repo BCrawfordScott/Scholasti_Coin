@@ -8,7 +8,7 @@ This project is written in Ruby with specs in Rspec. Both are necessary for the 
 
 ## Instructions
 
-`git clone` this repository (or download the file 'scolasti_coin') and open the project in your prefered text editor. Open your terminal, navigate to this project and `cd` into the `skeleton` directory. Run `rspec` in your terminal to see the tests fail. In classic [TDD](https://en.wikipedia.org/wiki/Test-driven_development) style, Your goal is to pass these specs. The `solution` directory next to the `skeleton` is there for your reference when you finish. Don't peek!
+`git clone` this repository (or download the file [scolasti_coin](https://drive.google.com/file/d/1gCKg-54FmPYtDv14et-SPWSckwkwBa-b/view?usp=sharing)) and open the project in your prefered text editor. Open your terminal, navigate to this project and `cd` into the `skeleton` directory. Run `rspec` in your terminal to see the tests fail. In classic [TDD](https://en.wikipedia.org/wiki/Test-driven_development) style, Your goal is to pass these specs. The `solution` directory next to the `skeleton` is there for your reference when you finish. Don't peek!
 
 ### The Block
 

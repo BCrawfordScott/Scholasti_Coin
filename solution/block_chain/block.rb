@@ -1,3 +1,5 @@
+require 'digest' # https://ruby-doc.org/stdlib-2.5.1/libdoc/digest/rdoc/Digest.html
+
 class Block
     def self.start_block
         Block.new(0, { "Brian" => 100 }, 'start')
@@ -15,7 +17,7 @@ class Block
     end
 
     def compute_hash
-        (index.to_s + data.to_s + prev_hash.to_s + timestamp.to_s + nonce.to_s).hash
+        Digest::SHA256.digest(index.to_s + data.to_s + prev_hash.to_s + timestamp.to_s + nonce.to_s)
     end
 
     def prove_work(difficulty)

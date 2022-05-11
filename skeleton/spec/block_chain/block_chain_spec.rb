@@ -11,9 +11,11 @@ RSpec.describe BlockChain do
         allow(start_block).to receive(:compute_hash).and_return(9876543210)
         allow(block1).to receive(:compute_hash).and_return(9876543211)
         allow(block2).to receive(:compute_hash).and_return(9876543212)
+        allow(block1).to receive(:prove_work).and_return(block1)
+        allow(block2).to receive(:prove_work).and_return(block2)
     end
     
-    describe '#new' do
+    describe '.new' do
         it 'initializes an array to hold the chain of blocks' do
             expect(subject.chain).to be_an_instance_of(Array)
         end
@@ -23,7 +25,7 @@ RSpec.describe BlockChain do
         end
     end
 
-    describe 'last_block' do
+    describe '#last_block' do
         it 'returns the last block in the chain' do
             subject.chain << block1
             subject.chain << block2
@@ -59,9 +61,16 @@ RSpec.describe BlockChain do
 
             expect(subject.chain.last).to be(block1)
         end
+
+        let(:prover_block) { double("prover_block") }
+
+        it 'has the block provide proof of work before appending it to the chain' do
+            expect(prover_block).to receive(:prove_work).with(subject.difficulty).and_return(1000)
+            subject.add_block(prover_block)
+        end
     end
 
-    describe 'next_index' do
+    describe '#next_index' do
         it 'produces the next index: 1 + the last block\'s index' do
             expect(subject.next_index).to eq(1)
             subject.add_block(block1)
@@ -69,7 +78,7 @@ RSpec.describe BlockChain do
         end
     end
 
-    describe 'validate_chain' do
+    describe '#validate_chain' do
         before(:each) do
             subject.chain << block1
             subject.chain << block2

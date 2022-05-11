@@ -16,12 +16,6 @@ RSpec.describe Block do
             described_class.new(index, data, prev_hash)
         end
 
-        it 'computes a hash for the block' do
-            expect_any_instance_of(described_class).to receive(:compute_hash)
-
-            block = described_class.new(index, data, prev_hash)
-        end
-
         let(:block) { described_class.new(index, data, prev_hash) }
 
         it 'freezes the data' do
@@ -30,9 +24,6 @@ RSpec.describe Block do
     end
 
     let(:subject) { described_class.new(5, { 'brian': 100, 'Lucy': 500 }, '123456789') }
-    let(:computed_hash) { 
-        (subject.index.to_s + subject.data.to_s + subject.prev_hash + subject.timestamp.to_s).hash
-    }
 
     describe '#index' do
         it 'provides the index for the block' do
@@ -65,9 +56,8 @@ RSpec.describe Block do
     end
 
     describe '#block_hash' do
-        it 'reads the hash for the block' do    
-
-            expect(subject.block_hash).to eq(computed_hash)
+        it 'initially retuns nil' do    
+            expect(subject.block_hash).to be_nil
         end
 
         it 'does not allow you to change the hash' do
@@ -86,10 +76,30 @@ RSpec.describe Block do
     end
 
     describe '#compute_hash' do
-        it 'computes a hash for the block based on its index, data, previous hash, and timestamp' do
-            computed_hash = (subject.index.to_s + subject.data.to_s + subject.prev_hash + subject.timestamp.to_s).hash
+        it 'computes a unique hash based on the block\'s data' do
+            first_hash = subject.compute_hash
+            subject.instance_variable_set(:@data, { second: 'second' })
+            second_hash = subject.compute_hash
+            subject.instance_variable_set(:@timestamp, Time.now + 2000)
+            third_hash = subject.compute_hash
 
-            expect(subject.block_hash).to eq(computed_hash)
+            expect(first_hash).to_not eq(second_hash)
+            expect(first_hash).to_not eq(third_hash)
+            expect(second_hash).to_not eq(third_hash)
+        end
+
+        it 'is deterministic' do
+            first_hash = subject.compute_hash
+
+            expect(subject.compute_hash).to eq(first_hash)
+            expect(subject.compute_hash).to eq(first_hash)
+            expect(subject.compute_hash).to eq(first_hash)
+
+            subject.instance_variable_set(:@nonce, 1)
+            second_hash = subject.compute_hash
+
+            expect(subject.compute_hash).to_not eq(first_hash)
+            expect(subject.compute_hash).to eq(second_hash)
         end
 
         it 'does not call "#hash" on the instance of Block' do
@@ -112,6 +122,18 @@ RSpec.describe Block do
 
         it 'has a previous hash of "start"' do
             expect(start_block.prev_hash).to eq('start')
+        end
+    end
+
+    describe '#prove_work' do
+        let(:difficulty) { 2 }
+        it 'finds and sets a hash that ends with a number of zeros equal to the difficulty' do
+            expect(subject.block_hash).to be_nil
+
+            subject.prove_work(difficulty)
+            length = subject.block_hash.to_s.length
+
+            expect(subject.block_hash.to_s.slice(length - difficulty, length)).to eq('00')
         end
     end
 end

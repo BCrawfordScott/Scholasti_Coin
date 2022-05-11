@@ -2,10 +2,11 @@ require_relative './block.rb'
 
 class BlockChain
 
-    attr_reader :chain
+    attr_reader :chain, :difficulty
     
     def initialize
         @chain = [Block.start_block]
+        @difficulty = 3
     end
 
     def last_block
@@ -17,9 +18,15 @@ class BlockChain
     end
 
     def add_block(block)
-        chain.push(block)
+        finished_block = block.prove_work(difficulty)
+        chain.push(finished_block)
     end
 
+    def mine(data)
+        block = build_block(data)
+        add_block(block)
+    end
+    
     def next_index
         last_block.index + 1
     end

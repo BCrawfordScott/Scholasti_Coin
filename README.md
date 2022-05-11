@@ -1,4 +1,4 @@
-# Scolasti-coin
+# Scholasti-coin
 _An introduction to blockchains_
 
 This project’s goal is to teach you the fundamentals of blockchains: their anatomy and their validation. This project contains broad instructions to guide you, and specs to test your implementation with clear expectations. As you work through this exercise, resist the urge to Google code to copy and paste. Remember: durable knowledge is hard won knowledge. If you’re stuck, reach out to a team member or mentor. Read the instructions completely before starting work on the project. Happy coding!
